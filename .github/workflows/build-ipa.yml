@@ -1,0 +1,67 @@
+name: Build unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['TianShen/**', 'Vendor/**', 'project.yml', '.github/workflows/build-ipa.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      # onnxruntime 静态 framework 已随仓库提供，这一步不联网
+      - name: Build (no signing)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project TianShen.xcodeproj \
+            -scheme TianShen \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            build | tee build.log | tail -n 200
+
+      - name: Package IPA
+        if: success()
+        run: |
+          mkdir -p out/Payload
+          cp -R build/Build/Products/Release-iphoneos/TianShen.app out/Payload/
+          cd out && zip -qr TianShen-unsigned.ipa Payload
+          shasum -a 256 TianShen-unsigned.ipa | tee sha256.txt
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: unsigned-ipa
+          path: |
+            out/*.ipa
+            out/sha256.txt
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-log
+          path: build.log
