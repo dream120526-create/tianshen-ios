@@ -55,9 +55,9 @@ final class Detector {
                              NSNumber(value: 3),
                              NSNumber(value: inputSize),
                              NSNumber(value: inputSize)]
-                guard let output = try runner.run(withFloatInput: input.data, shape: shape) else {
-                    return
-                }
+                // 桥接方法的 nullable 标注在 Swift 侧可能被推断成非可选，这里统一接成可选
+                let runOutput: [String: Any]? = try runner.run(withFloatInput: input.data, shape: shape)
+                guard let output = runOutput else { return }
                 let boxes = try decode(output: output, letterbox: input.letterbox)
                 result = (boxes, input.letterbox)
             } catch {
