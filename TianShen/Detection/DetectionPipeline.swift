@@ -1,4 +1,5 @@
 import Combine
+import CoreMedia
 import CoreVideo
 import Foundation
 

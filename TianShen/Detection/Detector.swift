@@ -55,7 +55,7 @@ final class Detector {
                              NSNumber(value: 3),
                              NSNumber(value: inputSize),
                              NSNumber(value: inputSize)]
-                guard let output = try runner.run(withFloatInput: input.data as NSData, shape: shape) else {
+                guard let output = try runner.run(withFloatInput: input.data, shape: shape) else {
                     return
                 }
                 let boxes = try decode(output: output, letterbox: input.letterbox)
