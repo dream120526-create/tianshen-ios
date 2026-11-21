@@ -55,9 +55,9 @@ enum ModelTier: String, CaseIterable, Identifiable {
 
     var approxSize: String {
         switch self {
-        case .low:  return "约 12 MB"
-        case .mid:  return "约 22 MB"
-        case .high: return "约 52 MB"
+        case .low:  return "12 MB"
+        case .mid:  return "43 MB"
+        case .high: return "99 MB"
         }
     }
 

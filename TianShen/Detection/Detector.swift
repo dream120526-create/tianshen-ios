@@ -13,6 +13,8 @@ final class Detector {
     private(set) var inputSize: Int = 416
     private(set) var loadedTier: ModelTier?
     private(set) var loadedPath: String = ""
+    /// FP16 模型（中/高配为省体积用半精度导出）输入也得是 float16
+    private(set) var usesHalfInput = false
 
     /// 原生侧粗筛阈值（UI 上的灵敏度在此基础上再过滤）
     private let nativeScoreThreshold: Float = 0.20
@@ -34,6 +36,7 @@ final class Detector {
                 self.inputSize = tier.inputSize
                 self.loadedTier = tier
                 self.loadedPath = url.path
+                self.usesHalfInput = runner.inputIsHalf
             } catch {
                 self.runner = nil
                 thrown = error
@@ -56,7 +59,9 @@ final class Detector {
                              NSNumber(value: inputSize),
                              NSNumber(value: inputSize)]
                 // 桥接方法的 nullable 标注在 Swift 侧可能被推断成非可选，这里统一接成可选
-                let runOutput: [String: Any]? = try runner.run(withFloatInput: input.data, shape: shape)
+                let runOutput: [String: Any]? = try runner.run(withFloatInput: input.data,
+                                                              shape: shape,
+                                                              half: usesHalfInput)
                 guard let output = runOutput else { return }
                 let boxes = try decode(output: output, letterbox: input.letterbox)
                 result = (boxes, input.letterbox)

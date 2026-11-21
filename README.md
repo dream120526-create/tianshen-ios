@@ -19,11 +19,12 @@
 
 | 档位 | 网络 | 输入 | 体积 | 适用 |
 |---|---|---|---|---|
-| 低配 | YOLOv8n | 416×416 | ~12 MB | 老机型、长时间开 |
-| 中配 | YOLOv8s | 416×416 | ~22 MB | 大多数机型 |
-| 高配 | YOLOv8m | 416×416 | ~52 MB | A15 及以上 |
+| 低配 | YOLOv8n | 416×416 | 12 MB | 老机型、长时间开 |
+| 中配 | YOLOv8s | 416×416 | 43 MB | 大多数机型 |
+| 高配 | YOLOv8m | 416×416 | 99 MB | A15 及以上 |
 
-仓库里已内置 `yolov8n.onnx`（从安卓版 `assets/yolov8n.onnx` 原样提取）。
+三档模型**都已内置进 App**（合计约 154 MB）：低配直接来自安卓版 `assets/yolov8n.onnx`，
+中/高配由 `Tools/fetch_models.py` 从 Ultralytics 官方权重按 `imgsz=416 opset=12` 导出。
 
 补中/高配：
 

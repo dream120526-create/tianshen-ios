@@ -12,9 +12,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSString *inputName;
 @property (nonatomic, readonly, copy) NSString *outputName;
 
-/// 输入 float32 连续内存（NCHW），返回 @{ @"data": NSData(float32), @"shape": [NSNumber] }
+/// 模型第一维输入是否是 float16（中/高配为省体积用半精度导出）
+@property (nonatomic, readonly) BOOL inputIsHalf;
+
+/// 输入连续内存（half=YES 时是 float16，否则 float32），返回 @{ @"data": NSData(float32), @"shape": [NSNumber] }
 - (nullable NSDictionary<NSString *, id> *)runWithFloatInput:(NSData *)input
                                                        shape:(NSArray<NSNumber *> *)shape
+                                                        half:(BOOL)half
                                                        error:(NSError **)error;
 
 @end

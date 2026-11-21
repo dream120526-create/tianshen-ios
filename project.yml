@@ -33,6 +33,7 @@ targets:
         INFOPLIST_FILE: TianShen/Info.plist
         GENERATE_INFOPLIST_FILE: "NO"
         TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SWIFT_OBJC_BRIDGING_HEADER: TianShen/Detection/TianShen-Bridging-Header.h
         FRAMEWORK_SEARCH_PATHS:
           - "$(inherited)"
@@ -43,7 +44,6 @@ targets:
           - "-lc++"
 
     dependencies:
-      # 官方 onnxruntime 静态 framework（1.24.2），已 vendor 进仓库，构建不联网
       - framework: Vendor/onnxruntime.framework
         embed: false
       - sdk: CoreML.framework

@@ -175,7 +175,7 @@ struct HUDView: View {
             VStack(spacing: 3) {
                 Text(tier.title)
                     .font(.system(size: 12.5, weight: .semibold))
-                Text(tier.network)
+                Text("\(tier.network) · \(tier.approxSize)")
                     .font(.system(size: 9, design: .monospaced))
                     .opacity(0.7)
                 if !available {
